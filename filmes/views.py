@@ -6,10 +6,7 @@ from .models import Filme
 from .serializers import FilmeSerializer
 from django.http import Http404
 
-# class FilmeView(generics.CreateAPIView):
-#     queryset = Filme.objects.all()
-#     def get_serializer_class(self):
-#         return FilmeSerializer
+# HEROKU APPLICATION URL : https://cinelist-backend.herokuapp.com/ 
 
 @api_view(['GET', 'POST'])
 def api_filme(request, filme_id):
@@ -27,5 +24,20 @@ def api_filme(request, filme_id):
         filme.director = new_filme_data['director']
         filme.save()
 
-    serialized_filme = FilmeSerializer(filme)
-    return Response(serialized_filme.data)
+    if request.method == 'GET':
+        serialized_filme = FilmeSerializer(filme)
+        return Response(serialized_filme.data)
+
+    elif request.method == 'PUT':
+        serializer = FilmeSerializer(filme, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        filme.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
