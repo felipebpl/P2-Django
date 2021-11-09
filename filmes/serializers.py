@@ -6,3 +6,16 @@ class FilmeSerializer(serializers.Serializer):
         model = Filme
         fields = ['id' , 'title', 'description', 'year', 'cast', 'director']
 
+    def create(self, validated_data):
+        filme = Filme(
+            id=validated_data['id'],
+            title=validated_data['title'],
+            description=validated_data['description'],
+            year=validated_data['year'],
+            cast=validated_data['cast'],
+            director=validated_data['director'],
+        )
+        
+        filme.save()
+        return filme
+
