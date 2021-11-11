@@ -63,3 +63,6 @@ def api_minhalista(request):
 #   "cast": "Emily Clark, Kit, ...",
 #   "director" : "Alan Taylor"
 # }
+
+def gotominhalista(request):
+    return HttpResponse("Olá! Visite a lista de filmes na url: https://cinelist-backend.herokuapp.com/minhalista/ ")
