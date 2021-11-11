@@ -9,19 +9,15 @@ from django.http import Http404
 
 # HEROKU APPLICATION URL: https://cinelist-backend.herokuapp.com/minhalista/ 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET','POST','PUT','UPDATE','DELETE'])
 def api_filme(request, filme_id):
-    # try:
-    #     print("passei no try")
-    #     filme = Filme.objects.get(id=filme_id)
-    # except Filme.DoesNotExist:
-    #     raise Http404()
-
-    filme = Filme.objects.get(id=filme_id)
+    try:
+        filme = Filme.objects.get(id=filme_id)
+    except Filme.DoesNotExist:
+        raise Http404()
     
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'UPDATE':
         new_filme_data = request.data
-        # FilmeSerializer.create(new_filme_data)
         filme.title = new_filme_data['title']
         filme.description = new_filme_data['description']
         filme.year = new_filme_data['year']
@@ -29,29 +25,38 @@ def api_filme(request, filme_id):
         filme.director = new_filme_data['director']
         filme.save()
 
-        serializer = FilmeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-      
+        serialized_filme = FilmeSerializer(data=request.data)
+        return Response(serialized_filme.data)
 
     elif request.method == 'GET':
         serialized_filme = FilmeSerializer(filme)
         return Response(serialized_filme.data)
 
-    elif request.method == 'PUT':
-        serializer = FilmeSerializer(filme, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         filme.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+@api_view(['GET', 'POST'])
+def api_minhalista(request):
+    
+    if request.method == 'POST':
+        filme = Filme()
+        new_filme_data = request.data
+        filme.title = new_filme_data['title']
+        filme.description = new_filme_data['description']
+        filme.year = new_filme_data['year']
+        filme.cast = new_filme_data['cast']
+        filme.director = new_filme_data['director']
+        filme.save()
+      
+    filmes = Filme.objects.all()
+    print(filmes)
+    serialized_filme = FilmeSerializer(filmes, many=True)
+    return Response(serialized_filme.data)
+
 # {
+#   "id":10,
 #   "title": "Game of Trones",
 #   "description": "Drama, Adventure, Fantasy",
 #   "year": 2011,
