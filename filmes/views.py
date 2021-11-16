@@ -54,15 +54,6 @@ def api_minhalista(request):
     print(filmes)
     serialized_filme = FilmeSerializer(filmes, many=True)
     return Response(serialized_filme.data)
-
-# {
-#   "id":10,
-#   "title": "Game of Trones",
-#   "description": "Drama, Adventure, Fantasy",
-#   "year": 2011,
-#   "cast": "Emily Clark, Kit, ...",
-#   "director" : "Alan Taylor"
-# }
-
+    
 def gotominhalista(request):
-    return HttpResponse("Olá! Visite a lista de filmes na url: https://cinelist-backend.herokuapp.com/minhalista/ ")
+    return HttpResponse("Olá! Visite a lista de filmes na url: https://cinelist-backend.herokuapp.com/minha-lista/ ")
